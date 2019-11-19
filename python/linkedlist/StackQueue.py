@@ -35,6 +35,8 @@ class DLQueue:
     def __init__(self):
         self.head = DoublyLinkedList(None)
         self.tail = DoublyLinkedList(None)
+        self.head.next = self.tail
+        self.tail.prev = self.head
         self.count = 0
 
     def push(self, v):
@@ -77,12 +79,13 @@ class SQueue:
     def pop(self):
         if self.ostack.count > 0:
             return self.ostack.pop()
-        elif self.istack.count > 0:
-            while self.istack.count > 0:
-                self.ostack.push(self.istack.pop)
-            return self.ostack.pop()
         else:
-            return None
+            while self.istack.count > 0:
+                self.ostack.push(self.istack.pop())
+            if self.ostack.count > 0:
+                return self.ostack.pop()
+            else:
+                return None
 
     def total(self):
         return self.istack.total() + self.ostack.total()
@@ -96,7 +99,7 @@ class QStack1:
     def push(self, v):
         self.q1.push(v)
         while self.q2.total() > 0:
-            self.q1.push(self.q2.pop)
+            self.q1.push(self.q2.pop())
         self.q1, self.q2 = self.q2, self.q1
 
     def pop(self):
@@ -120,7 +123,7 @@ class QStack2:
     def pop(self):
         if self.q1.count == 0:
             return None
-        while self.q1.count() > 1:
+        while self.q1.total() > 1:
             self.q2.push(self.q1.pop())
         v = self.q1.pop()
         self.q1, self.q2 = self.q2, self.q1
